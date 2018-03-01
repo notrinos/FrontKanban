@@ -12,7 +12,7 @@
 $page_security = 'SA_MANAGER';
 $path_to_root  = '../..';
 include_once($path_to_root . "/includes/session.inc");
-include_once($path_to_root . "/modules/kanban/includes/PHPMailer-5.2.14/PHPMailerAutoload.php");
+include_once($path_to_root . "/modules/kanban/includes/PHPMailer/PHPMailerAutoload.php");
 add_access_extensions();
 
 define('DATA_FILE', "$path_to_root/modules/kanban/data/".$_SESSION['project']);
