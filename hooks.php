@@ -50,7 +50,7 @@ class hooks_kanban extends hooks {
     function activate_extension($company, $check_only=true) {
         global $db_connections;
         
-        $updates = array( 'update.sql' => array(''));
+        $updates = array( 'update.sql' => array('kanban'));
         
         return $this->update_databases($company, $updates, $check_only);
     }
@@ -58,7 +58,7 @@ class hooks_kanban extends hooks {
     function deactivate_extension($company, $check_only=true) {
         global $db_connections;
 
-        $updates = array('remove.sql' => array(''));
+        $updates = array('remove.sql' => array('kanban'));
 
         return $this->update_databases($company, $updates, $check_only);
     }
