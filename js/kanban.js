@@ -1,13 +1,13 @@
 
-/*=======================================================\
-|                        FrontKanban                     |
-|--------------------------------------------------------|
-|   Creator: Phương                                      |
-|   Date :   01-Dec-2017                                 |
-|   Description: Frontaccounting Project Management Ext  |
-|   Free software under GNU GPL                          |
-|                                                        |
-\=======================================================*/
+/*======================================================\
+|                      FrontKanban                      |
+|-------------------------------------------------------|
+|  Creator: Phương                                      |
+|  Date :   01-Dec-2017                                 |
+|  Description: Frontaccounting Project Management Ext  |
+|  Free software under GNU GPL                          |
+|                                                       |
+\======================================================*/
 
 (function(){
 	"use strict";
