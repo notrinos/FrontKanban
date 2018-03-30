@@ -1,13 +1,13 @@
 <?php
-/*=======================================================\
-|                        FrontKanban                     |
-|--------------------------------------------------------|
-|   Creator: Phương                                      |
-|   Date :   01-Dec-2017                                 |
-|   Description: Frontaccounting Project Management Ext  |
-|   Free software under GNU GPL                          |
-|                                                        |
-\=======================================================*/
+/*======================================================\
+|                      FrontKanban                      |
+|-------------------------------------------------------|
+|  Creator: Phương                                      |
+|  Date :   01-Dec-2017                                 |
+|  Description: Frontaccounting Project Management Ext  |
+|  Free software under GNU GPL                          |
+|                                                       |
+\======================================================*/
 
 $page_security = 'SA_MANAGER';
 $path_to_root  = '../..';
@@ -15,7 +15,10 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/modules/kanban/includes/PHPMailer/PHPMailerAutoload.php");
 add_access_extensions();
 
-define('DATA_FILE', "$path_to_root/modules/kanban/data/".$_SESSION['project']);
+if(!file_exists(company_path().'/kanban_data'))
+    mkdir(company_path().'/kanban_data');
+
+define('DATA_FILE', company_path().'/kanban_data/'.$_SESSION['project']);
 
 function save($data) {
 	$encoded = json_encode($data);

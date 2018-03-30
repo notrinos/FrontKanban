@@ -1,13 +1,13 @@
 <?php
-/*=======================================================\
-|                        FrontKanban                     |
-|--------------------------------------------------------|
-|   Creator: Phương                                      |
-|   Date :   01-Dec-2017                                 |
-|   Description: Frontaccounting Project Management Ext  |
-|   Free software under GNU GPL                          |
-|                                                        |
-\=======================================================*/
+/*======================================================\
+|                      FrontKanban                      |
+|-------------------------------------------------------|
+|  Creator: Phương                                      |
+|  Date :   01-Dec-2017                                 |
+|  Description: Frontaccounting Project Management Ext  |
+|  Free software under GNU GPL                          |
+|                                                       |
+\======================================================*/
 define ('SS_KANBAN', 252<<8);
 
 class kanban_app extends application {
@@ -18,13 +18,12 @@ class kanban_app extends application {
         parent::__construct("kanban", _($this->help_context = "Projects"));
         
         $this->add_module(_("Transactions"));
-        // $this->add_lapp_function(0, _('TEST'), $path_to_root.'/modules/kanban/test.php', 'SA_MANAGER', MENU_TRANSACTION);
    
         $this->add_module(_("Inquiries and Reports"));
-        $this->add_lapp_function(1, _('Projects List'), $path_to_root.'/modules/kanban/manage/projects.php?action=list', 'SA_MANAGER', MENU_TRANSACTION);
+        $this->add_lapp_function(1, _('Projects List'), $path_to_root.'/modules/kanban/manage/projects.php?', 'SA_MANAGER', MENU_TRANSACTION);
         
         $this->add_module(_("Maintenance"));
-        $this->add_lapp_function(2, _('Manage Project'), $path_to_root.'/modules/kanban/manage/add_project.php', 'SA_MANAGER', MENU_ENTRY);
+        $this->add_lapp_function(2, _('Manage Project'), $path_to_root.'/modules/kanban/manage/add_project.php?', 'SA_MANAGER', MENU_ENTRY);
 		
 		$this->add_extensions();
     }
@@ -50,7 +49,7 @@ class hooks_kanban extends hooks {
     function activate_extension($company, $check_only=true) {
         global $db_connections;
         
-        $updates = array( 'update.sql' => array('kanban'));
+        $updates = array( 'update.sql' => array(''));
         
         return $this->update_databases($company, $updates, $check_only);
     }
@@ -58,7 +57,7 @@ class hooks_kanban extends hooks {
     function deactivate_extension($company, $check_only=true) {
         global $db_connections;
 
-        $updates = array('remove.sql' => array('kanban'));
+        $updates = array('remove.sql' => array(''));
 
         return $this->update_databases($company, $updates, $check_only);
     }
