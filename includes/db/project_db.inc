@@ -1,13 +1,13 @@
 <?php
-/*=======================================================\
-|                        FrontKanban                     |
-|--------------------------------------------------------|
-|   Creator: Phương                                      |
-|   Date :   01-12-2017                                  |
-|   Description: Frontaccounting Project Management Ext  |
-|   Free software under GNU GPL                          |
-|                                                        |
-\=======================================================*/
+/*======================================================\
+|                      FrontKanban                      |
+|-------------------------------------------------------|
+|  Creator: Phương                                      |
+|  Date :   01-Dec-2017                                 |
+|  Description: Frontaccounting Project Management Ext  |
+|  Free software under GNU GPL                          |
+|                                                       |
+\======================================================*/
 
 function write_project($id=false, $name, $desc, $type, $created_date, $closed_date, $begin_date, $end_date, $owner, $closed=false) {
     if(!$id)
@@ -25,7 +25,7 @@ function write_project($id=false, $name, $desc, $type, $created_date, $closed_da
 	    .")";
 	else
 	    $sql = "UPDATE ".TB_PREF."projects SET 
-	    proj_id = ".db_escape($id).", 
+	     
 	    proj_name = ".db_escape($name).", 
 	    proj_description = ".db_escape($desc).", 
 	    proj_type = ".db_escape($type).", 
@@ -33,11 +33,11 @@ function write_project($id=false, $name, $desc, $type, $created_date, $closed_da
 	    closed_date = '".date2sql($closed_date)."', 
 	    begin_date = '".date2sql($begin_date)."', 
 	    end_date = '".date2sql($end_date)."', 
-	    owner_id = ".db_escape($owner)." 
+	    owner_id = ".db_escape($owner).", 
 	    closed = ".db_escape($closed)." 
 	    WHERE proj_id = ".db_escape($id);
 
-	db_query($sql, "could not write project data");
+	db_query($sql, _('could not write project data'));
 }
 
 //--------------------------------------------------------------------------
@@ -47,11 +47,11 @@ function get_projects($id = false, $all = false, $type = false) {
 	$sql = "SELECT * FROM ".TB_PREF."projects";
 	$where = array();
 	
-	if(!$all)
+	if(!$all && !$id)
 		$where[] = "!closed";
 	if($id)
 		$where[] = "proj_id=".db_escape($id);
-	if($type)
+	if($type === 0 || $type === 1)
 		$where[] = "proj_type = ".db_escape($type);
 		
 	if(count($where))
@@ -59,7 +59,7 @@ function get_projects($id = false, $all = false, $type = false) {
 	else
 		$sql .= ' WHERE 1';
 
-	$result = db_query($sql, "Could not get project data.");
+	$result = db_query($sql, _('Could not get project data.'));
 	
 	if($id)
 		return db_fetch($result);
@@ -84,19 +84,18 @@ function get_last_project() {
 
 //--------------------------------------------------------------------------
 
-
-
-//--------------------------------------------------------------------------
-
 function add_project_data_file($id) {
     global $path_to_root;
 
+    if(!file_exists(company_path().'/kanban_data'))
+        mkdir(company_path().'/kanban_data');
+
 	$content = "{}";
-    $fp = fopen("$path_to_root/modules/kanban/data/".$id, "wb");
+    $fp = fopen(company_path().'/kanban_data/'.$id, "wb");
     fwrite($fp, $content);
     fclose($fp);
 
-    if(file_exists("$path_to_root/modules/kanban/data/".$id))
+    if(file_exists(company_path().'/kanban_data/'.$id))
         return true;
     else
         return false;
