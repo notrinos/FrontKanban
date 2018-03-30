@@ -1,13 +1,13 @@
 <?php
-/*=======================================================\
-|                        FrontKanban                     |
-|--------------------------------------------------------|
-|   Creator: Phương                                      |
-|   Date :   01-12-2017                                  |
-|   Description: Frontaccounting Project Management Ext  |
-|   Free software under GNU GPL                          |
-|                                                        |
-\=======================================================*/
+/*======================================================\
+|                      FrontKanban                      |
+|-------------------------------------------------------|
+|  Creator: Phương                                      |
+|  Date :   01-Dec-2017                                 |
+|  Description: Frontaccounting Project Management Ext  |
+|  Free software under GNU GPL                          |
+|                                                       |
+\======================================================*/
 
 function projects_list($name, $id = null, $spec_option = false, $submit_on_change = false, $show_closed = false, $type = false)
 {
@@ -42,4 +42,20 @@ function projects_list_row($label, $name, $id = null, $all_option = false, $subm
 	projects_list_cells(null, $name, $id, $all_option, 
 	$submit_on_change, $show_inactive, $type);
 	echo "</tr>";
+}
+
+//--------------------------------------------------------------------------
+
+function project_types_radio_row($label, $name, $type=null) {
+    echo "<tr><td class='label'>$label</td><td>";
+	
+    if($type==0) {
+        echo "<input type='radio' name=$name value='0' checked>Public&nbsp;&nbsp;&nbsp;";
+        echo "<input type='radio' name=$name value='1'>Private&nbsp;&nbsp;&nbsp;";
+    }
+    else {
+        echo "<input type='radio' name=$name value='0'>Public&nbsp;&nbsp;&nbsp;";
+        echo "<input type='radio' name=$name value='1' checked>Private&nbsp;&nbsp;&nbsp;";
+    }
+    echo "</td></tr>";
 }
