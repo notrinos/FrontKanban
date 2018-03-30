@@ -1,4 +1,5 @@
 
+DROP TABLE IF EXISTS `0_projects`;
 CREATE TABLE IF NOT EXISTS `0_projects` (
     `proj_id` int(11) NOT NULL AUTO_INCREMENT,
     `proj_name` varchar(100) NOT NULL,
