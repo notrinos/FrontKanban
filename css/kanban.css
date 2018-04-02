@@ -78,15 +78,19 @@ ul {
 	background-color: #DFB0FF;
 	border: 2px solid #CD85FE;
 }
+#task_form {
+	display: none;
+}
 #color_and_title {
 	display: block;
-	line-height: 45px;
+	height: 50px;
 	margin-bottom: 1em; 
 }
 .editBox {
+	display: inline-block;
 	padding: 10px 15px;
 	height: auto;
-	width: 80%;
+	width: calc(100% - 100px - 1em);
 	font-size: 1.3em;
 	color: #555;
 	box-sizing: border-box;
@@ -95,12 +99,18 @@ ul {
     display: inline-block;
     box-sizing: border-box;
 }
-.date_cells, .task_modal_control {
-	margin-left: 1em;
+.date_cells {
+	width: 100px;
+	height: 50px;
+	float: right;
+	text-align: center;
 }
 .task_modal_control a:hover {
 	text-decoration: none;
 	color: #DDD;
+}
+.task_modal_control {
+	float: right;
 }
 .clear {
 	clear: both;
@@ -156,12 +166,17 @@ ul {
     border: 0;
     cursor: default;
 }
-div.task_modal form#task_form, div.task_modal form#comment_form {
+div.task_modal form#task_form, div.task_modal form#comment_form, div#task_wrapper {
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+}
+div#task_wrapper #task_input {
+	border: 1px solid #AAA;
+	margin-bottom: 1em;
+	width: 100%;
 }
 a#save_comment, a.save {
     border: 1px solid #3079ed;
@@ -169,41 +184,50 @@ a#save_comment, a.save {
 	float: right;
 	/*clear: both;*/
 }
+
 .comment_content {
 	margin-left: 2em;
 	margin-top: -1em;
 	padding: 5px;
 	width: calc(100% - 2em);
-	border: thin solid #AAA;
+	border: thin solid #DDD;
 	box-sizing: border-box;
 }
 .task_modal .user_box, .task_modal .editable {
 	display: none;
 }
-.task_modal_control a, a#save_comment, a.save {
+.task_modal_control a, a#save_comment, a.save, a#color, a#edit_task {
 	font-size: 1.3em;
-	margin-right: 5px;
+	margin: 0 5px;
 	padding: 3px 5px;
 	border-radius: 2px;
 	color: #FFF;
 }
-.cancel {
+#cancel {
 	font-size: 2em;
 	position: fixed;
 	top: 20px;
 	left: 30px;
 	color: #F6EB18;
 }
-.cancel:hover {
+#cancel:hover {
 	text-decoration: none;
 }
-.delete {
+#delete {
 	border: 1px solid #DC3545;
 	background-color: #D9534F;
 }
-.color {
+#color {
 	border: 1px solid #20A040;
 	background-color: #2FAF4F;
+}
+#cancel_edit {
+	border: 1px solid #BBB;
+	background-color: #999;
+}
+#edit_task {
+	border: 1px solid #eea236;
+	background-color: #f0ad4e;
 }
 .editable {
 	display: inline-block;
@@ -219,4 +243,8 @@ a#save_comment, a.save {
 input.editbutton {
 	display: inline-block;
 	width: auto;
+}
+#comment_content div.jqte {
+	width: 70%;
+	margin: 1em auto;
 }
