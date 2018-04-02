@@ -25,9 +25,9 @@
 			data: {action:'load'},
 			dataType: 'json',
 			success: function(data) {
-				if (data === null) {
+				if (data === null)
 					data = {};
-				}
+
 				app_data.board = init_board(data);
 				app_data.states = state_data.states;
 				app_data.states_order = state_data.states_order;
@@ -63,18 +63,17 @@
 	var createPeopleList = function() {
 		var peopleList = '<form id="people_form"><ul class="people-list">';
 		for (var i in app_data.people) {
-			if (app_data.people.hasOwnProperty(i)) {
+			if (app_data.people.hasOwnProperty(i))
 				peopleList += '<li><input type="checkbox" name="'+i+'" value="0">'+i+'</li>';
-			}
 		}
 		peopleList += '</ul></form>';
 		$('#member_filter').append(peopleList);
 	};
 
 	var saveData = function(data) {
-		if (data === '') {
+		if (data === '')
 			data = {};
-		}
+
 		$.ajax({
 			type: 'POST',
 			url: '../data.php',
@@ -84,9 +83,9 @@
 	};
 
 	var saveComment = function(data) {
-        if(data == '') {
+        if(data == '')
         	data = {};
-        }
+
         $.ajax({
         	type: 'POST',
         	url: '../data.php',
@@ -117,9 +116,9 @@
 			if (tasks.hasOwnProperty(i)) {
 				var task = tasks[i];
 				task.id = i;
-				if (! board[task.state]) {
+				if (! board[task.state])
 					board[task.state] = [];
-				}
+
 				board[task.state].push(task);
 			}
 		}
@@ -127,14 +126,14 @@
 	};
 
 	var create_task_li_item = function(task) {
-		var task_element = $("<li data-state='"+task.state+"' data-id='"+task.id+"'><div class='task_box color_"+task.color+"' ><div class='task_editable' data-id='"+task.id+"'>" + task.title + "</div><div class='user_box'>" + task.responsible + "</div><a href='#' class='editable'>Edit</a></div></li>");
+		var task_element = $("<li data-state='"+task.state+"' data-id='"+task.id+"'><div class='task_box color_"+task.color+"' ><div class='task_editable' data-id='"+task.id+"'>" + task.title + "</div><div class='user_box'>" + task.responsible + "</div><a href='#' class='editable kanban_btn'>Edit</a></div></li>");
 
-		if (app_data.people[task.responsible] === undefined) {
+		if (app_data.people[task.responsible] === undefined)
 			app_data.people[task.responsible] = [task.id];
-		}
-		else {
+
+		else
 			app_data.people[task.responsible].push(task.id);
-		}
+		
 		return task_element;
 	};
 
@@ -165,20 +164,17 @@
 			var col = create_column(app_data.board, state, app_data.states[state],j);
 			$('#kanban_board').append(col);
 		}
-		
 		startDragsort();
 	};
 
 	var create_task = function(id, title, content, state, color, comment) {
-		if (state === undefined) {
+		if (state === undefined)
 			state = app_data.states_order[0];
-		}
-		if (color === undefined) {
+		if (color === undefined)
 			color = 0;
-		}
-        if(comment == undefined) {
+        if(comment == undefined)
         	comment = "";
-        }
+
 		var assignee = $('#kanban_board').find('select.user_list').val();
 		if(assignee === undefined || assignee == 0)
 			assignee = 'Not assigned';
@@ -220,9 +216,9 @@
 			data: {action:'get_all_users'},
 			dataType: 'json',
 			success: function(data) {
-				if (data === null) {
+				if (data === null)
 					data = {};
-				}
+
 				app_data.users = data;
 				app_data.currUser = data[Object.keys(data).length - 3];
 				app_data.currUserName = data[Object.keys(data).length - 2];
@@ -230,7 +226,7 @@
 				// console.log(app_data);
 			}
 		});
-	}
+	};
 
 	var create_members_list = function(selected_id) {
 		var list = "<select class='user_list'><option value='0'>not assigned</option>";
@@ -262,7 +258,7 @@
         var seconds = parseInt((duration/1000)%60);
         seconds = (seconds < 10) ? "0" + seconds : seconds;
         
-		return day + '/' + month_name[month] + '/' + year;
+		return day + user.datesep + month_name[month] + user.datesep + year;
 	}
 
 	var decodeEntities = (function() {
@@ -330,21 +326,21 @@
 				var createdDate = dateFormat(app_data.rawData[taskId].id);
 
 				var members = create_members_list(oldAssignee);
-				var taskForm = '<form id="task_form"><div id="color_and_title"><a class="cancel" href="#">&#10060;</a><input type="text" id="task_title" class="editBox" value="'+titleValue+'" maxlength="100"/><div class="date_cells">Created: '+createdDate+'</div></div><input type="text" class="editBox formatable" id="task_input" value="'+taskContent+'" data-old-value="'+taskContent+'" data-old-color="'+oldColor+'"><div class="user_list_cells">Assignee:'+members+'</div><div class="task_modal_control"><a href="#" class="color">Color</a><a href="#" class="delete">Delete</a></div></form>';
+				var task_wrapper = '<div id="task_wrapper"><div id="color_and_title"><a id="cancel" href="#">&#10060;</a><div class="task_title editBox color_'+oldColor+'">'+titleValue+'</div><div class="date_cells">Created: '+createdDate+'</div></div><div class="editBox" id="task_input" data-old-color="'+oldColor+'">'+taskContent+'</div><div class="user_list_cells">Assignee:'+oldAssignee+'</div><div class="task_modal_control"><a href="#" id="edit_task" class="kanban_btn">EDIT</a></div></div>';
+				var taskForm = '<form id="task_form"><div id="color_and_title"><a id="cancel" href="#">&#10060;</a><input type="text" id="task_title" class="task_title editBox color_'+oldColor+'" value="'+titleValue+'" maxlength="100"/><div class="date_cells">Created: '+createdDate+'</div></div><input type="text" class="editBox formatable" id="task_input" value="'+taskContent+'" data-old-value="'+taskContent+'" data-old-color="'+oldColor+'"><div class="user_list_cells">Assignee:'+members+'</div><a href="#" id="color" class="kanban_btn">Color</a><div class="task_modal_control"><a href="#" id="cancel_edit" class="kanban_btn">Cancel</a><a href="#" id="delete" class="kanban_btn">Delete</a></div></form>';
 				var commentForm = '<form id="comment_form"><div class="task_comments"></div><input type="text" class="formatable" id="comment_input"></form>';
 				var commentBtn = '<a id="save_comment" href="#">Comment</a>';
 				var saveBtn = '<a class="save" href="#">Save</a>';
 
 				$(this).parent().addClass('task_modal');
 				$('.task_modal').show();
+				$(this).siblings('.task_editable').append(task_wrapper);
 				$(this).siblings('.task_editable').append(taskForm);
 				$(this).siblings('.task_editable').append(commentForm);
-				// $('#task_form').find('#task_title').focus();
 				var val = $('#task_form').find('#task_input').val();
 				$('#task_form').find('#task_input').val('');
 				$('#task_form').find('#task_input').val(val);
 				$(this).siblings('.task_editable').find('.task_comments').append('<p>'+comments+'</p>');
-				$('#task_title').addClass('color_' + oldColor);
 				destroyDragsort();
 				IN_EDIT_MODE = true;
 				$(".formatable").jqte();
@@ -359,15 +355,19 @@
 			}
 		});
 
+		$('#kanban_board').on('click', '#edit_task', function(){
+			$('div#task_wrapper').hide();
+			$('form#comment_form').hide();
+			$('form#task_form').show();
+		});
+
 		$('#member_filter').on('change', '.people-list input[type="checkbox"]', function(){
 			var responsible = $(this).attr('name');
 
-			if($(this).val() == '0') {
-				$(this).val('1')
-			}
-			else {
-				$(this).val('0')
-			}
+			if($(this).val() == '0')
+				$(this).val('1');
+			else
+				$(this).val('0');
 
 			var count = 0;
 			for (var k in app_data.people) {
@@ -384,9 +384,8 @@
 					count++ ;
 				}
 			}
-			if(count == 0) {
+			if(count == 0)
 				$('#kanban_board').find('.blur_task').removeClass('blur_task');
-			}
 		});
 
 		$('#date_filter').on('click', 'input[name="search"]', function() {
@@ -394,10 +393,10 @@
 			var to = $('input[name="ToDate"]').attr('_last_val');
 
 			if(user.datefmt == 1) {
-				from = from.split('/');
+				from = from.split(user.datesep);
 				from = new Date(from[2],from[1]-1,from[0]);
 			    from = from.getTime();
-			    to = to.split('/');
+			    to = to.split(user.datesep);
 			    to = new Date(to[2],to[1]-1,to[0]);
 			    to = to.getTime();
 			}
@@ -436,7 +435,7 @@
 
 		$(document).keyup(function(e) {
 			if (e.keyCode === 27) { 
-				$('.cancel').trigger('click');
+				$('#cancel').trigger('click');
 			}
 			else if (e.keyCode === 78) {
 				if (!IN_EDIT_MODE) {
@@ -445,7 +444,7 @@
 			}
 		});
 
-		$('#kanban_board').on('click','.cancel', function(){
+		$('#kanban_board').on('click','#cancel', function(){
 			var taskId = $(this).parent().parent().parent().attr('data-id');
 			var oldTitle = app_data.rawData[taskId].title;
 
@@ -468,7 +467,7 @@
       		return false;
 		});
 
-		$('#kanban_board').on('click','.delete', function(){
+		$('#kanban_board').on('click','#delete', function(){
 			var id = $(this).parent().parent().parent().attr('data-id');
 			$(this).parent().parent().parent().parent().parent().remove();
 			$('html').unbind('click');
@@ -480,22 +479,28 @@
             return false;
 		});
 
-		$('#kanban_board').on('click', '.color', function() {
-			var taskId = $(this).parent().parent().parent().attr('data-id');
+		$('#kanban_board').on('click', '#color', function() {
+			var taskId = $(this).parent().parent().attr('data-id');
 			if (app_data.rawData[taskId].color === undefined) {
 				app_data.rawData[taskId].color = 0;				
 			}
 			else {
-				$(this).parent().parent().parent().parent().removeClass('color_'+app_data.rawData[taskId].color);
+				$(this).parent().parent().parent().removeClass('color_'+app_data.rawData[taskId].color);
 				$('#task_title').removeClass('color_'+app_data.rawData[taskId].color);
 				app_data.rawData[taskId].color++;
 				if (app_data.rawData[taskId].color >= possible_colors) {
 					app_data.rawData[taskId].color = 0;
 				}
 			}
-			$(this).parent().parent().parent().parent().addClass('color_'+app_data.rawData[taskId].color);
+			$(this).parent().parent().parent().addClass('color_'+app_data.rawData[taskId].color);
 			$('#task_title').addClass('color_'+app_data.rawData[taskId].color);
             return false;
+		});
+
+		$('#kanban_board').on('click', '#cancel_edit', function(){
+			$('form#task_form').hide();
+			$('div#task_wrapper').show();
+			$('form#comment_form').show();
 		});
 
 		$('#kanban_board').on('submit', '#task_form', function(){
@@ -542,10 +547,9 @@
 				content: "<b>" + app_data.currUserName + "</b>" + " has commented on the task: " + "<b>" + title + "</b>" + "<p>" + newComment + "</p>"
 			};
 
-            if(app_data.rawData[taskId].comment == "") {
+            if(app_data.rawData[taskId].comment == "")
                 app_data.rawData[taskId].comment = {commentID:""};
                 
-            }
             app_data.rawData[taskId].comment[commentID] = {};
 			app_data.rawData[taskId].comment[commentID][app_data.currUser] = newComment;
 
@@ -565,15 +569,14 @@
                 	sendNotification(notification);
                 }
 			});
-
 			return false;
 		});
 
 		$('#kanban_board').on('click','.save', function(){
 			$('.task_modal').removeClass('task_modal');
 			$('#task_form').submit();
+
 			startDragsort();
-			
 			return false;
 		});
 
@@ -582,7 +585,6 @@
 			$('.task_modal').removeClass('task_modal');
             
             startDragsort();
-
 			return false;
 		});
 	});
