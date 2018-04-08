@@ -128,9 +128,9 @@ ul {
 	margin-right: 10px;
 }
 .task_filter {
-	display: inline-block;
-	width: 100%;
+	display: block;
 	margin: 10px;
+	box-sizing: border-box;
 }
 .task_filter ul {
 	display: inline-block;
