@@ -51,6 +51,9 @@ ul {
 	word-wrap: break-word;
 	box-sizing: initial;
 }
+#task_no {
+	color: #999;
+}
 .task_box .task_editable {
 	max-height: 150px;
 	overflow: auto;
