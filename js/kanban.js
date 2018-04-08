@@ -28,7 +28,7 @@
 				if (data === null)
 					data = {};
 
-				app_data.board = init_board(data);
+				app_data.board = init_board(data); //console.log(app_data.board);
 				app_data.states = state_data.states;
 				app_data.states_order = state_data.states_order;
 				app_data.rawData = data;
@@ -115,18 +115,18 @@
 		for (var i in tasks) {
 			if (tasks.hasOwnProperty(i)) {
 				var task = tasks[i];
-				task.id = i;
+				task.id = tasks[i].id;
 				if (! board[task.state])
-					board[task.state] = [];
-
-				board[task.state].push(task);
+					board[task.state] = {};
+                
+				board[task.state][i] = task;
 			}
 		}
 		return board;
 	};
 
-	var create_task_li_item = function(task) {
-		var task_element = $("<li data-state='"+task.state+"' data-id='"+task.id+"'><div class='task_box color_"+task.color+"' ><div class='task_editable' data-id='"+task.id+"'>" + task.title + "</div><div class='user_box'>" + task.responsible + "</div><a href='#' class='editable kanban_btn'>Edit</a></div></li>");
+	var create_task_li_item = function(task, no) {
+		var task_element = $("<li data-state='"+task.state+"' data-id='"+task.id+"' data-no='"+no+"'><div class='task_box color_"+task.color+"' ><div class='task_editable' data-id='"+task.id+"' data-no='"+no+"'><span id='task_no'>#" + no + "</span><br />" + task.title + "</div><div class='user_box'>" + task.responsible + "</div><a href='#' class='editable kanban_btn'>Edit</a></div></li>");
 
 		if (app_data.people[task.responsible] === undefined)
 			app_data.people[task.responsible] = [task.id];
@@ -140,9 +140,9 @@
 	var create_list = function(board, state) {
 		var list = $("<ul></ul>");
 		if (board[state]) {
-			for (var i=0, len=board[state].length; i<len; i++) {
-				var id = board[state][i].id;
-				var task_element = create_task_li_item(app_data.rawData[id]);
+			for (var i in board[state]) {
+				var task_element = create_task_li_item(app_data.rawData[i], i);
+				//console.log(task_element);
 				list.append(task_element);
 			}
 		}
@@ -161,7 +161,7 @@
 	var create_board = function(app_data) {
 		for (var j=0; j< app_data.states_order.length; j++) {
 			var state = app_data.states_order[j];
-			var col = create_column(app_data.board, state, app_data.states[state],j);
+			var col = create_column(app_data.board, state, app_data.states[state], j);
 			$('#kanban_board').append(col);
 		}
 		startDragsort();
@@ -196,8 +196,8 @@
 
 	var droppedElement = function() {
 		var newState = $(this).parent().attr('id');
-		var taskId = $(this).attr('data-id');
-		app_data.rawData[taskId].state = newState;
+		var taskNo = $(this).attr('data-no');
+		app_data.rawData[taskNo].state = newState;
 		saveData(app_data.rawData);
 	};
 
@@ -291,9 +291,13 @@
 			if (app_data.rawData === undefined) {
 				app_data.rawData = {};
 			}
-			app_data.rawData[id] = task;
+			var nextNo = Object.keys(app_data.rawData).sort().pop();
+			if(nextNo == undefined) nextNo = 1;
+			else nextNo++;
+
+			app_data.rawData[nextNo] = task;
 			saveData(app_data.rawData);
-			var taskHtml = create_task_li_item(task);
+			var taskHtml = create_task_li_item(task, nextNo);
 			$('#'+task.state).append(taskHtml);
 			$(taskHtml).find('.editable').trigger('click');
 			destroyDragsort();
@@ -302,28 +306,28 @@
 
 		$('#kanban_board').on('click','.editable', function(){
 			if (!IN_EDIT_MODE) {
-				var taskId = $(this).parent().parent().attr('data-id');
-				var titleValue = app_data.rawData[taskId].title;
-				var taskContent = app_data.rawData[taskId].content;
+				var taskNo = $(this).parent().parent().attr('data-no');
+				var titleValue = app_data.rawData[taskNo].title;
+				var taskContent = app_data.rawData[taskNo].content;
 				taskContent = taskContent.replace(/"/g, "'");
-				var oldColor = app_data.rawData[taskId].color;
-				var oldAssignee = app_data.rawData[taskId].responsible;
+				var oldColor = app_data.rawData[taskNo].color;
+				var oldAssignee = app_data.rawData[taskNo].responsible;
 
 				var comments = '<div id="comments_wrapper">';
 
-				$.each(app_data.rawData[taskId].comment, function(key,val){
+				$.each(app_data.rawData[taskNo].comment, function(key,val){
 					var momment = dateFormat(key);
 					$.each(val, function(user, cmt){
 						cmt = $('<textarea/>').html(cmt).text();
 						comments += '<p><b>' + user + '</b><i>&nbsp;' + momment + '</i></p>';
 						comments += '<div class="comment_content">' + cmt + '</div>';
-						app_data.rawData[taskId].comment[key][user] = cmt;
+						app_data.rawData[taskNo].comment[key][user] = cmt;
 					});
 				});
 
 				comments += '</div>';
 				
-				var createdDate = dateFormat(app_data.rawData[taskId].id);
+				var createdDate = dateFormat(app_data.rawData[taskNo].id);
 
 				var members = create_members_list(oldAssignee);
 				var task_wrapper = '<div id="task_wrapper"><div id="color_and_title"><a id="cancel" href="#">&#10060;</a><div class="task_title editBox color_'+oldColor+'">'+titleValue+'</div><div class="date_cells">Created: '+createdDate+'</div></div><div class="editBox" id="task_input" data-old-color="'+oldColor+'">'+taskContent+'</div><div class="user_list_cells">Assignee:'+oldAssignee+'</div><div class="task_modal_control"><a href="#" id="edit_task" class="kanban_btn">EDIT</a></div></div>';
@@ -445,21 +449,22 @@
 		});
 
 		$('#kanban_board').on('click','#cancel', function(){
-			var taskId = $(this).parent().parent().parent().attr('data-id');
-			var oldTitle = app_data.rawData[taskId].title;
+			var taskNo = $(this).parent().parent().parent().attr('data-no');
+			var titleNo = "<span id='task_no'>#"+taskNo+"</span><br />";
+			var oldTitle = app_data.rawData[taskNo].title;
 
 			var remove_colors = "";
 			for (var i=0;i<possible_colors;i++) {
 				remove_colors += "color_"+i+" ";
 			}
 			var oldColor = $(this).parent().parent().find('#task_input').attr('data-old-color');
-			app_data.rawData[taskId].color = oldColor;
+			app_data.rawData[taskNo].color = oldColor;
 			$(this).parent().parent().parent().parent().removeClass(remove_colors);
 			$(this).parent().parent().parent().parent().addClass('color_'+oldColor);
 			$(this).parent().parent().parent().parent().removeClass('task_modal');
 			$(this).parent().parent().parent().parent().attr('style', '');
 
-			$(this).parent().parent().parent().html(oldTitle);
+			$(this).parent().parent().parent().html(titleNo + oldTitle);
 
 			$('html').unbind('click');
 			setTimeout(function(){IN_EDIT_MODE = false;}, 200);
@@ -468,10 +473,10 @@
 		});
 
 		$('#kanban_board').on('click','#delete', function(){
-			var id = $(this).parent().parent().parent().attr('data-id');
+			var no = $(this).parent().parent().parent().attr('data-no');
 			$(this).parent().parent().parent().parent().parent().remove();
 			$('html').unbind('click');
-			delete app_data.rawData[id];
+			delete app_data.rawData[no];
 			saveData(app_data.rawData);
 			setTimeout(function(){IN_EDIT_MODE = false;}, 200);
 			$(this).parent().parent().parent().parent().removeClass('task_modal');
@@ -480,20 +485,20 @@
 		});
 
 		$('#kanban_board').on('click', '#color', function() {
-			var taskId = $(this).parent().parent().attr('data-id');
-			if (app_data.rawData[taskId].color === undefined) {
-				app_data.rawData[taskId].color = 0;				
+			var taskNo = $(this).parent().parent().attr('data-no');
+			if (app_data.rawData[taskNo].color === undefined) {
+				app_data.rawData[taskNo].color = 0;				
 			}
 			else {
-				$(this).parent().parent().parent().removeClass('color_'+app_data.rawData[taskId].color);
-				$('#task_title').removeClass('color_'+app_data.rawData[taskId].color);
-				app_data.rawData[taskId].color++;
-				if (app_data.rawData[taskId].color >= possible_colors) {
-					app_data.rawData[taskId].color = 0;
+				$(this).parent().parent().parent().removeClass('color_'+app_data.rawData[taskNo].color);
+				$('#task_title').removeClass('color_'+app_data.rawData[taskNo].color);
+				app_data.rawData[taskNo].color++;
+				if (app_data.rawData[taskNo].color >= possible_colors) {
+					app_data.rawData[taskNo].color = 0;
 				}
 			}
-			$(this).parent().parent().parent().addClass('color_'+app_data.rawData[taskId].color);
-			$('#task_title').addClass('color_'+app_data.rawData[taskId].color);
+			$(this).parent().parent().parent().addClass('color_'+app_data.rawData[taskNo].color);
+			$('#task_title').addClass('color_'+app_data.rawData[taskNo].color);
             return false;
 		});
 
@@ -507,21 +512,23 @@
 			var title = $(this).find('#task_title').val();
 			var content = $(this).find('#task_input').val();
 			var taskId = $(this).parent().attr('data-id');
+			var taskNo = $(this).parent().attr('data-no');
+			var titleNo = "<span id='task_no'>#"+taskNo+"</span><br />";
 			var state = $(this).parent().parent().parent().attr('data-state');
-			var color = app_data.rawData[taskId].color;
-			var task = create_task(taskId, title, content, state, color, app_data.rawData[taskId].comment);
+			var color = app_data.rawData[taskNo].color;
+			var task = create_task(taskId, title, content, state, color, app_data.rawData[taskNo].comment);
 			var notification = {
 				subject:app_data.currUserName + " has created or edited a task on your project.",
 				content:app_data.currUserName + " has created a task: " + "<h3>" + title + "</h3>" + "<p>" + content + "</p>"
 			};
             
-			app_data.rawData[taskId] = task;
+			app_data.rawData[taskNo] = task;
 			saveData(app_data.rawData);
 
 			$('html').unbind('click');
 			$(this).parent().parent().attr('style', '');
 			$(this).parent().siblings('.user_box').html(task.responsible);
-			$(this).parent().html(task.title);
+			$(this).parent().html(titleNo + task.title);
 			setTimeout(function(){IN_EDIT_MODE = false;}, 200);
 
 			$.each(app_data.users, function(key,val){
@@ -536,31 +543,33 @@
 		$('#kanban_board').on('submit', '#comment_form', function(){
 
 			var taskId = $(this).parent().attr('data-id');
+			var taskNo = $(this).parent().attr('data-no');
+			var titleNo = "<span id='task_no'>#"+taskNo+"</span><br />";
 			var commentID = new Date().getTime();
 			var newComment = $('#comment_input').val();
-			var title = app_data.rawData[taskId].title;
-			var content = app_data.rawData[taskId].content;
-			var state = app_data.rawData[taskId].state;
-			var color = app_data.rawData[taskId].color
+			var title = app_data.rawData[taskNo].title;
+			var content = app_data.rawData[taskNo].content;
+			var state = app_data.rawData[taskNo].state;
+			var color = app_data.rawData[taskNo].color
 			var notification = {
 				subject:app_data.currUserName + " has commented on task: " + title,
 				content: "<b>" + app_data.currUserName + "</b>" + " has commented on the task: " + "<b>" + title + "</b>" + "<p>" + newComment + "</p>"
 			};
 
-            if(app_data.rawData[taskId].comment == "")
-                app_data.rawData[taskId].comment = {commentID:""};
+            if(app_data.rawData[taskNo].comment == "")
+                app_data.rawData[taskNo].comment = {commentID:""};
                 
-            app_data.rawData[taskId].comment[commentID] = {};
-			app_data.rawData[taskId].comment[commentID][app_data.currUser] = newComment;
+            app_data.rawData[taskNo].comment[commentID] = {};
+			app_data.rawData[taskNo].comment[commentID][app_data.currUser] = newComment;
 
-			var task = create_task(taskId, title, content, state, color, app_data.rawData[taskId].comment);
-			app_data.rawData[taskId] = task;
+			var task = create_task(taskId, title, content, state, color, app_data.rawData[taskNo].comment);
+			app_data.rawData[taskNo] = task;
 			saveComment(app_data.rawData);
 
 			$('html').unbind('click');
 			$(this).parent().parent().attr('style', '');
 			$(this).parent().siblings('.user_box').html(task.responsible);
-			$(this).parent().html(task.title);
+			$(this).parent().html(titleNo + task.title);
 			setTimeout(function(){IN_EDIT_MODE = false;}, 200);
 
 			$.each(app_data.users, function(key,val){
