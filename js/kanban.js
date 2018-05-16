@@ -291,7 +291,7 @@
 			if (app_data.rawData === undefined) {
 				app_data.rawData = {};
 			}
-			var nextNo = Object.keys(app_data.rawData).sort().pop();
+			var nextNo = Object.keys(app_data.rawData).sort((a,b)=>a-b).pop();
 			if(nextNo == undefined) nextNo = 1;
 			else nextNo++;
 
