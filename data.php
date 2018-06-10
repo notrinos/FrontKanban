@@ -21,11 +21,13 @@ if(!file_exists(company_path().'/kanban_data'))
 define('DATA_FILE', company_path().'/kanban_data/'.$_SESSION['project']);
 
 function save($data) {
-	$encoded = json_encode($data);
-	$encoded = preg_replace("/},/", "},\n", $encoded);
-	$fh = fopen(DATA_FILE, 'w') or die ("could not open file");
-	fwrite($fh, $encoded);
-	fclose($fh);
+	// $encoded = json_encode($data, JSON_PRETTY_PRINT);
+	$encoded = preg_replace("/&quot;/", '"', $data);
+	$f = fopen(DATA_FILE, 'w') or die ("could not open file");
+    flock($f, LOCK_EX); //lock file to handle multi access at the same time
+	fwrite($f, $encoded);
+    flock($f, LOCK_UN); // release lock
+	fclose($f);
 }
 
 function load() {
