@@ -77,7 +77,7 @@
 		$.ajax({
 			type: 'POST',
 			url: '../data.php',
-			data: {action:'save',data:data},
+			data: {action:'save',data:JSON.stringify(data, null, 4)},
 			dataType:'json'
 		});
 	};
@@ -89,7 +89,7 @@
         $.ajax({
         	type: 'POST',
         	url: '../data.php',
-        	data: {action:'save',data:data},
+        	data: {action:'save',data:JSON.stringify(data, null, 4)},
         	dataType: 'json',
         	success: function() {
 				
@@ -519,8 +519,7 @@
 			var task = create_task(taskId, title, content, state, color, app_data.rawData[taskNo].comment);
 			var notification = {
 				subject:app_data.currUserName + " has created or edited a task on your project.",
-				content:app_data.currUserName + " has created a task: " + "<h3>" + title + "</h3>" + "<p>" + content + "</p>"
-			};
+				content:app_data.currUserName + " has created or edited <b>Task #" + taskNo + "</b><h3>" + title + "</h3>" + "<p>" + content + "</p>"			};
             
 			app_data.rawData[taskNo] = task;
 			saveData(app_data.rawData);
@@ -552,7 +551,7 @@
 			var state = app_data.rawData[taskNo].state;
 			var color = app_data.rawData[taskNo].color
 			var notification = {
-				subject:app_data.currUserName + " has commented on task: " + title,
+				subject:app_data.currUserName + " has commented on Task #" + taskNo + " - " + title,
 				content: "<b>" + app_data.currUserName + "</b>" + " has commented on the task: " + "<b>" + title + "</b>" + "<p>" + newComment + "</p>"
 			};
 
