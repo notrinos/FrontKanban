@@ -22,7 +22,11 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="../js/jquery-1.10.2.min.js"></script>
+<?php
+if(user_theme() != 'flat' && user_theme() != 'shinee')
+    echo "<script type='text/javascript' src='../js/jquery-1.10.2.min.js'></script>";
+?>
+
 <script type="text/javascript" src="../js/jquery.dragsort-0.5.2.js" ></script>
 <script type="text/javascript" src="../js/config.js" ></script>
 <script type="text/javascript" src="../js/kanban.js" ></script>
