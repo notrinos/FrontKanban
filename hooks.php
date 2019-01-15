@@ -24,6 +24,7 @@ class kanban_app extends application {
         
         $this->add_module(_("Maintenance"));
         $this->add_lapp_function(2, _('Manage Project'), $path_to_root.'/modules/kanban/manage/add_project.php?', 'SA_MANAGER', MENU_ENTRY);
+        $this->add_rapp_function(2, _('SMTP Mail Setup'), $path_to_root.'/modules/kanban/manage/mail_setup.php?', 'SA_SETUPCOMPANY', MENU_MAINTENANCE);
 		
 		$this->add_extensions();
     }
@@ -49,7 +50,7 @@ class hooks_kanban extends hooks {
     function activate_extension($company, $check_only=true) {
         global $db_connections;
         
-        $updates = array( 'update.sql' => array(''));
+        $updates = array( 'update.sql' => array('kanban'));
         
         return $this->update_databases($company, $updates, $check_only);
     }
@@ -57,7 +58,7 @@ class hooks_kanban extends hooks {
     function deactivate_extension($company, $check_only=true) {
         global $db_connections;
 
-        $updates = array('remove.sql' => array(''));
+        $updates = array('remove.sql' => array('kanban'));
 
         return $this->update_databases($company, $updates, $check_only);
     }
