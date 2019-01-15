@@ -47,21 +47,28 @@ function get_all_users() {
     echo json_encode($result);
 }
 function sendEmail($data) {
-    date_default_timezone_set('Etc/UTC');
+    
+    $host = get_company_pref('smtp_host');
+    $port = get_company_pref('smtp_port');
+    $user = get_company_pref('smtp_username');
+    $pass = get_company_pref('smtp_password');
+    $secure = get_company_pref('smtp_secure');
+    $sender = get_company_pref('smtp_sendername');
+    
     $mail = new PHPMailer;
     $mail->IsHTML(true);
     $mail->CharSet = "text/html; charset=UTF-8;";
     $mail->isSMTP();
     $mail->SMTPDebug = 2;
     $mail->Debugoutput = 'html';
-    $mail->Host = 'yourHost';
-    $mail->Port = 465;
-    $mail->SMTPSecure = 'ssl';
+    $mail->Host = $host;
+    $mail->Port = $port;
+    $mail->SMTPSecure = $secure;
     $mail->SMTPAuth = true;
-    $mail->Username = "yourUsername";
-    $mail->Password = "yourPassword";
-    $mail->setFrom('yourUsername', 'Project Notification');
-    $mail->addReplyTo('replyto@example.com', 'First Last');
+    $mail->Username = $user;
+    $mail->Password = $pass;
+    $mail->setFrom($user, $sender);
+    $mail->addReplyTo('replyto@example.com', 'No Reply');
     $mail->addAddress($data['recipient'], 'recipient');
     $mail->Subject = $data['subject'];
     $mail->Body = html_entity_decode($data['content']);
