@@ -37,7 +37,9 @@ if(isset($_POST['addupdate'])) {
 		set_focus('proj_name');
 	}
 	else {
-		write_project(@$selected_id, get_post('proj_name'), get_post('proj_description'), get_post('proj_type'), Today(), null, $_POST['begin_date'], $_POST['end_date'], $_SESSION['wa_current_user']->user, check_value('closed'));
+		$closed_date = check_value('closed') == 1 ? Today() : null;
+
+		write_project(@$selected_id, get_post('proj_name'), get_post('proj_description'), get_post('proj_type'), Today(), $closed_date, $_POST['begin_date'], $_POST['end_date'], $_SESSION['wa_current_user']->user, check_value('closed'));
 
 		if(empty($selected_id)) {
             $id = db_insert_id();
