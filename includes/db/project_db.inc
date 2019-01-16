@@ -9,33 +9,19 @@
 |                                                       |
 \======================================================*/
 
-function write_project($id=false, $name, $desc, $type, $created_date, $closed_date, $begin_date, $end_date, $owner, $closed=false) {
-    if(!$id)
-	    $sql = "INSERT INTO ".TB_PREF."projects VALUES("
-	    .db_escape($id).", "
-	    .db_escape($name).", "
-	    .db_escape($desc).", "
-	    .db_escape($type).", '"
-	    .date2sql($created_date)."', '"
-	    .date2sql($closed_date)."', '"
-	    .date2sql($begin_date)."', '"
-	    .date2sql($end_date)."', "
-	    .db_escape($owner).", "
-	    .db_escape($closed)
-	    .")";
-	else
-	    $sql = "UPDATE ".TB_PREF."projects SET 
-	     
-	    proj_name = ".db_escape($name).", 
-	    proj_description = ".db_escape($desc).", 
-	    proj_type = ".db_escape($type).", 
-	    created_date = '".date2sql($created_date)."', 
-	    closed_date = '".date2sql($closed_date)."', 
-	    begin_date = '".date2sql($begin_date)."', 
-	    end_date = '".date2sql($end_date)."', 
-	    owner_id = ".db_escape($owner).", 
-	    closed = ".db_escape($closed)." 
-	    WHERE proj_id = ".db_escape($id);
+function write_project($id=false, $name, $desc, $type, $created_date, $closed_date=null, $begin_date, $end_date, $owner, $closed=0) {
+    if(!$id) {
+    	if(!empty($closed) && is_date($created_date))
+    		$sql = "INSERT INTO ".TB_PREF."projects(proj_name, proj_description, proj_type, created_date, closed_date, begin_date, end_date, owner_id, closed) VALUES(".db_escape($name).", ".db_escape($desc).", ".db_escape($type).", '".date2sql($created_date)."', '".date2sql($closed_date)."', '".date2sql($begin_date)."', '".date2sql($end_date)."', ".db_escape($owner).", ".db_escape($closed).")";
+    	else
+    		$sql = "INSERT INTO ".TB_PREF."projects(proj_name, proj_description, proj_type, created_date, begin_date, end_date, owner_id, closed) VALUES(".db_escape($name).", ".db_escape($desc).", ".db_escape($type).", '".date2sql($created_date)."', '".date2sql($begin_date)."', '".date2sql($end_date)."', ".db_escape($owner).", ".db_escape($closed).")";
+    }
+	else {
+		if(!empty($closed) && is_date($created_date))
+			$sql = "UPDATE ".TB_PREF."projects SET proj_name = ".db_escape($name).", proj_description = ".db_escape($desc).", proj_type = ".db_escape($type).", created_date = '".date2sql($created_date)."', closed_date = '".date2sql($closed_date)."', begin_date = '".date2sql($begin_date)."', end_date = '".date2sql($end_date)."', owner_id = ".db_escape($owner).", closed = ".db_escape($closed)." WHERE proj_id = ".db_escape($id);
+		else
+			$sql = "UPDATE ".TB_PREF."projects SET proj_name = ".db_escape($name).", proj_description = ".db_escape($desc).", proj_type = ".db_escape($type).", created_date = '".date2sql($created_date)."', begin_date = '".date2sql($begin_date)."', end_date = '".date2sql($end_date)."', owner_id = ".db_escape($owner).", closed = ".db_escape($closed)." WHERE proj_id = ".db_escape($id);
+	}
 
 	db_query($sql, _('could not write project data'));
 }
