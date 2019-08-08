@@ -2,7 +2,7 @@
 
 * [Kanban Projects Management Extension](https://github.com/notrinos/FrontKanban) for [FrontAccounting](http://frontaccounting.com/)
 * [Forum Discussion](http://frontaccounting.com/punbb/viewtopic.php?id=7162)
-* [DEMO](http://notrinos.com/fa244/index.php)
+* [DEMO](http://notrinos.com/fa/index.php)
 
 Requirement
 -----------
