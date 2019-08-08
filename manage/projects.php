@@ -41,6 +41,9 @@ function get_owner($row) {
 function get_project_type($row) {
     return $row['proj_type'] == 0 ? _('Public') : _('Private');
 }
+function get_closed_date($row) {
+    return $row['closed_date'] == '0000-00-00' ? '' : $row['closed_date'];
+}
 function edit_link($row) {
     return button('edit_'.$row['proj_id'], _('Edit this project'), false, ICON_EDIT);
 }
@@ -81,7 +84,7 @@ if(empty($_GET['proj'])) {
         _('Description'),
         _('Type') => array('fun'=>'get_project_type', 'align'=>'center'),
         _('Created date') => array('type'=>'date'),
-        _('Closed date') => array('type'=>'date'),
+        _('Closed date') => array('type'=>'date','fun'=>'get_closed_date'),
         _('Begin date') => array('type'=>'date'),
         _('End date') => array('type'=>'date'),
         _('Owner') => array('fun'=>'get_owner'),

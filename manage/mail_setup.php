@@ -16,8 +16,6 @@ include_once($path_to_root . '/includes/session.inc');
 add_access_extensions();
 
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
-// include_once($path_to_root . "/admin/db/company_db.inc");
 
 include_once($path_to_root . "/modules/kanban/includes/kanban_db.inc");
 include_once($path_to_root . "/modules/kanban/includes/kanban_ui.inc");
