@@ -57,6 +57,7 @@ ul {
 .task_box .task_editable {
 	max-height: 150px;
 	overflow: auto;
+	padding-bottom: 15px;
 }
 .task_modal .task_editable {
 	max-height: 100%;
@@ -142,7 +143,7 @@ ul {
 	display: inline-block;
 	float: left;
 	color: #777;
-	margin: 5px 0;
+	margin: 0;
 }
 .blur_task {
 	background-color: #F9F9F9;
@@ -235,7 +236,8 @@ a#save_comment, a.save {
 .editable {
 	display: inline-block;
 	float: right;
-	margin: 5px 0;
+	margin: 0;
+	margin-top: 3px;
 	z-index: 100;
 }
 .placeholder div { 

@@ -202,7 +202,7 @@
 	};
 
 	var startDragsort = function() {
-		$('ul.state').dragsort({dragSelector:'li',dragBetween: true, placeHolderTemplate: "<li class='placeholder'><div>&nbsp</div></li>",dragEnd:droppedElement});
+		$('ul.state').dragsort({dragSelector:'div.task_editable',dragBetween: true, placeHolderTemplate: "<li class='placeholder'><div>&nbsp</div></li>",dragEnd:droppedElement});
 	};
 
 	var destroyDragsort = function() {
